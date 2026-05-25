@@ -1,0 +1,20 @@
+{
+  "sources": [
+    {
+      "name": "external-docs",
+      "source": "../shingo-docs",
+      "target": "src/content/posts/imported/external-docs",
+      "sourceProject": "external-docs",
+      "enabled": true,
+      "stabilitySample": false
+    },
+    {
+      "name": "nemo-knows-wiki",
+      "source": "../nemo-knows/wiki",
+      "target": "src/content/wiki/imported/nemo-knows",
+      "sourceProject": "nemo-knows",
+      "enabled": true,
+      "stabilitySample": true
+    }
+  ]
+}

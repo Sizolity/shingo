@@ -1,0 +1,29 @@
+---
+import { getEntryTitle } from '../lib/content';
+import type { WikiEntry } from '../lib/wiki';
+
+interface Props {
+  groups: Map<string, WikiEntry[]>;
+  activeId?: string;
+}
+
+const { groups, activeId } = Astro.props;
+---
+
+<aside class="wiki-aside">
+  <p class="sidebar-label">知识库</p>
+  {
+    [...groups.entries()].map(([category, entries]) => (
+      <section class="wiki-aside-section">
+        <h2>{category}</h2>
+        <ul>
+          {entries.map((entry) => (
+            <li class={entry.id === activeId ? 'active' : undefined}>
+              <a href={`/wiki/${entry.id}/`}>{getEntryTitle(entry)}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</aside>

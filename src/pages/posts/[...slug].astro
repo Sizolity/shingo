@@ -19,7 +19,6 @@ const { Content } = await render(post);
 <BaseLayout title={getEntryTitle(post)} description={post.data.summary}>
   <article class="article">
     <p class="meta">{formatDate(getEntryDate(post))}</p>
-    <h1>{getEntryTitle(post)}</h1>
     {
       post.data.tags.length > 0 && (
         <p class="tags">{post.data.tags.map((tag) => <span>#{tag}</span>)}</p>

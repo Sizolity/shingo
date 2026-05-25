@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import WikiAside from '../../components/WikiAside.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getEntryTitle, isPublished } from '../../lib/content';
+import { groupWikiEntries, sortWikiEntries } from '../../lib/wiki';
+
+export async function getStaticPaths() {
+  const wiki = (await getCollection('wiki')).filter(isPublished);
+
+  return wiki.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const entries = sortWikiEntries((await getCollection('wiki')).filter(isPublished));
+const groups = groupWikiEntries(entries);
+---
+
+<BaseLayout title={getEntryTitle(entry)} description={entry.data.summary}>
+  <article class="article">
+    <p class="meta">
+      {[entry.data.sourceProject, entry.data.kind, entry.data.sourcePath].filter(Boolean).join(' / ')}
+    </p>
+    <Content />
+  </article>
+  <WikiAside slot="aside" groups={groups} activeId={entry.id} />
+</BaseLayout>

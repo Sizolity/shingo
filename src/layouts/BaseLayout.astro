@@ -1,6 +1,7 @@
 ---
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import SiteSidebar from '../components/SiteSidebar.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 
 const { title, description = 'Personal site and knowledge base.' } = Astro.props;
 const siteName = import.meta.env.PUBLIC_SITE_NAME ?? 'Shingo';
+const githubUrl = import.meta.env.PUBLIC_GITHUB_URL ?? 'https://github.com/Sizolity';
 const pageTitle = title === siteName ? siteName : `${title} | ${siteName}`;
 ---
 
@@ -24,10 +26,18 @@ const pageTitle = title === siteName ? siteName : `${title} | ${siteName}`;
     <title>{pageTitle}</title>
   </head>
   <body>
-    <SiteHeader siteName={siteName} />
-    <main>
-      <slot />
-    </main>
+    <SiteHeader siteName={siteName} githubUrl={githubUrl} />
+    <div class:list={['site-shell', Astro.slots.has('aside') && 'has-aside']}>
+      <SiteSidebar />
+      <main>
+        <slot />
+      </main>
+      {
+        Astro.slots.has('aside') && (
+          <slot name="aside" />
+        )
+      }
+    </div>
     <SiteFooter />
   </body>
 </html>

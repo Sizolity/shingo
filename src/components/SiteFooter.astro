@@ -1,3 +1,8 @@
+---
+const year = new Date().getFullYear();
+const githubUrl = import.meta.env.PUBLIC_GITHUB_URL ?? 'https://github.com/Sizolity';
+---
+
 <footer class="site-footer">
-  <span>Built with Astro, TypeScript, and Markdown.</span>
+  <span>© {year} <a href={githubUrl} target="_blank" rel="noreferrer">Sizolity</a>. Nemo Knows. All rights reserved.</span>
 </footer>

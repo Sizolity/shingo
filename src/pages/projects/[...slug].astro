@@ -19,7 +19,6 @@ const { Content } = await render(project);
 <BaseLayout title={getEntryTitle(project)} description={project.data.summary}>
   <article class="article">
     <p class="meta">{project.data.status ?? 'active'}</p>
-    <h1>{getEntryTitle(project)}</h1>
     {
       project.data.tags.length > 0 && (
         <p class="tags">{project.data.tags.map((tag) => <span>#{tag}</span>)}</p>

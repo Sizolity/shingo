@@ -7,10 +7,10 @@ const posts = sortByDateDesc((await getCollection('posts')).filter(isPublished))
 const projects = sortByDateDesc((await getCollection('projects')).filter(isPublished)).slice(0, 3);
 ---
 
-<BaseLayout title="Shingo" description="Personal website, notes, docs, and projects.">
+<BaseLayout title="Shingo" description="Personal website, notes, wiki, and projects.">
   <section class="hero">
     <p class="muted">Personal website</p>
-    <h1>记录文章、文档和个人项目。</h1>
+    <h1>记录文章、Wiki 和个人项目。</h1>
     <p>
       这里先保持朴素：Markdown 写内容，Astro 静态渲染，后续再接入 LLM
       做标签、摘要和内容组织。
@@ -19,13 +19,16 @@ const projects = sortByDateDesc((await getCollection('projects')).filter(isPubli
 
   <section>
     <h2>最近文章</h2>
-    <div class="grid">
+    <div class="entry-list">
       {
         posts.map((post) => (
-          <a class="card" href={`/posts/${post.id}/`}>
+          <a class="entry-card" href={`/posts/${post.id}/`}>
             <p class="meta">{formatDate(getEntryDate(post))}</p>
             <h3>{getEntryTitle(post)}</h3>
             {post.data.summary && <p>{post.data.summary}</p>}
+            {post.data.tags.length > 0 && (
+              <p class="tags">{post.data.tags.map((tag) => <span>#{tag}</span>)}</p>
+            )}
           </a>
         ))
       }

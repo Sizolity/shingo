@@ -8,7 +8,9 @@ tags:
 status: active
 ---
 
+# Shingo
+
 Shingo 是当前个人网站项目。
 
 第一阶段目标是搭建一个朴素、可维护、可静态部署的内容站。后续可以接入
-`nemo-knows`，让文章、文档和项目之间产生自动关联。
+`nemo-knows`，让文章、Wiki 和项目之间产生自动关联。

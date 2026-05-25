@@ -7,7 +7,11 @@ const baseContentSchema = z.object({
   date: z.coerce.date().optional(),
   updated: z.coerce.date().optional(),
   summary: z.string().optional(),
+  kind: z.string().optional(),
   tags: z.array(z.string()).default([]),
+  created: z.coerce.date().optional(),
+  sourcePath: z.string().optional(),
+  sourceProject: z.string().optional(),
   draft: z.boolean().default(false),
 });
 
@@ -16,8 +20,8 @@ const posts = defineCollection({
   schema: baseContentSchema,
 });
 
-const docs = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/docs' }),
+const wiki = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/wiki' }),
   schema: baseContentSchema.extend({
     order: z.number().optional(),
   }),
@@ -32,4 +36,4 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { posts, docs, projects };
+export const collections = { posts, wiki, projects };

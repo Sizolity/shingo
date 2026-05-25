@@ -12,10 +12,10 @@ const posts = sortByDateDesc((await getCollection('posts')).filter(isPublished))
     <p>长期记录和整理的内容会放在这里。</p>
   </section>
 
-  <div class="grid">
+  <div class="entry-list">
     {
       posts.map((post) => (
-        <a class="card" href={`/posts/${post.id}/`}>
+        <a class="entry-card" href={`/posts/${post.id}/`}>
           <p class="meta">{formatDate(getEntryDate(post))}</p>
           <h2>{getEntryTitle(post)}</h2>
           {post.data.summary && <p>{post.data.summary}</p>}

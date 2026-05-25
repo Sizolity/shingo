@@ -1,7 +1,8 @@
 {
   "extends": "./node_modules/astro/tsconfigs/strict.json",
   "compilerOptions": {
-    "moduleResolution": "Bundler"
+    "moduleResolution": "Bundler",
+    "types": ["node"]
   },
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist", "node_modules"]
