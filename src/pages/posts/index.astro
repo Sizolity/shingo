@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDate, getEntryDate, getEntryTitle, isPublished, sortByDateDesc } from '../../lib/content';
+
+const posts = sortByDateDesc((await getCollection('posts')).filter(isPublished));
+---
+
+<BaseLayout title="文章" description="Articles and notes.">
+  <section class="hero">
+    <h1>文章</h1>
+    <p>长期记录和整理的内容会放在这里。</p>
+  </section>
+
+  <div class="grid">
+    {
+      posts.map((post) => (
+        <a class="card" href={`/posts/${post.id}/`}>
+          <p class="meta">{formatDate(getEntryDate(post))}</p>
+          <h2>{getEntryTitle(post)}</h2>
+          {post.data.summary && <p>{post.data.summary}</p>}
+          {post.data.tags.length > 0 && (
+            <p class="tags">{post.data.tags.map((tag) => <span>#{tag}</span>)}</p>
+          )}
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

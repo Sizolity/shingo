@@ -1,0 +1,16 @@
+---
+interface Props {
+  siteName: string;
+}
+
+const { siteName } = Astro.props;
+---
+
+<header class="site-header">
+  <a class="brand" href="/">{siteName}</a>
+  <nav aria-label="Main navigation">
+    <a href="/posts/">文章</a>
+    <a href="/docs/">文档</a>
+    <a href="/projects/">项目</a>
+  </nav>
+</header>

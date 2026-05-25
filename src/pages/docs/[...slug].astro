@@ -1,0 +1,24 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getEntryTitle, isPublished } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const docs = (await getCollection('docs')).filter(isPublished);
+
+  return docs.map((doc) => ({
+    params: { slug: doc.id },
+    props: { doc },
+  }));
+}
+
+const { doc } = Astro.props;
+const { Content } = await render(doc);
+---
+
+<BaseLayout title={getEntryTitle(doc)} description={doc.data.summary}>
+  <article class="article">
+    <h1>{getEntryTitle(doc)}</h1>
+    <Content />
+  </article>
+</BaseLayout>

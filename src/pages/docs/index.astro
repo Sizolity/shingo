@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getEntryTitle, isPublished } from '../../lib/content';
+
+const docs = (await getCollection('docs'))
+  .filter(isPublished)
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+---
+
+<BaseLayout title="文档" description="Documentation and reference notes.">
+  <section class="hero">
+    <h1>文档</h1>
+    <p>用于沉淀项目文档、笔记和可复用说明。</p>
+  </section>
+
+  <div class="grid">
+    {
+      docs.map((doc) => (
+        <a class="card" href={`/docs/${doc.id}/`}>
+          <h2>{getEntryTitle(doc)}</h2>
+          {doc.data.summary && <p>{doc.data.summary}</p>}
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

@@ -1,0 +1,39 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getEntryTitle, isPublished } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects')).filter(isPublished);
+
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={getEntryTitle(project)} description={project.data.summary}>
+  <article class="article">
+    <p class="meta">{project.data.status ?? 'active'}</p>
+    <h1>{getEntryTitle(project)}</h1>
+    {
+      project.data.tags.length > 0 && (
+        <p class="tags">{project.data.tags.map((tag) => <span>#{tag}</span>)}</p>
+      )
+    }
+    <Content />
+    {
+      (project.data.url || project.data.repo) && (
+        <p>
+          {project.data.url && <a href={project.data.url}>项目地址</a>}
+          {project.data.url && project.data.repo && ' / '}
+          {project.data.repo && <a href={project.data.repo}>代码仓库</a>}
+        </p>
+      )
+    }
+  </article>
+</BaseLayout>
