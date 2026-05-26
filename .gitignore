@@ -8,3 +8,7 @@ node_modules/
 .tmp/
 .content-sources.local.json
 .cursor/
+
+# Regenerated from external content sources during deploy/content sync.
+src/content/posts/imported/
+src/content/wiki/imported/
