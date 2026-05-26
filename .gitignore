@@ -10,5 +10,12 @@ node_modules/
 .cursor/
 
 # Regenerated from external content sources during deploy/content sync.
-src/content/posts/imported/
-src/content/wiki/imported/
+src/content/record/**
+src/content/toy/**
+!src/content/record/
+!src/content/record/.gitkeep
+!src/content/toy/
+!src/content/toy/.gitkeep
+src/content/wiki/**
+!src/content/wiki/
+!src/content/wiki/.gitkeep

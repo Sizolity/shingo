@@ -1,30 +1,23 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import WikiAside from '../../components/WikiAside.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { isPublished } from '../../lib/content';
-import { groupWikiEntries, sortWikiEntries } from '../../lib/wiki';
+import { getWikiDisplayTitle, groupWikiEntries, sortWikiEntries } from '../../lib/wiki';
 
 const entries = sortWikiEntries((await getCollection('wiki')).filter(isPublished));
 const groups = groupWikiEntries(entries);
+const indexEntry = entries.find((entry) => entry.data.kind === 'index');
+const renderedIndex = indexEntry ? await render(indexEntry) : undefined;
+const IndexContent = renderedIndex?.Content;
 ---
 
-<BaseLayout title="Wiki" description="Knowledge wiki and reference notes.">
-  <section class="hero">
+<BaseLayout title={indexEntry ? getWikiDisplayTitle(indexEntry) : 'Wiki'} description="Knowledge wiki and reference notes.">
+  <article class:list={['article', indexEntry && 'article--standalone-wiki']}>
     <p class="muted">Knowledge Base</p>
-    <h1>Wiki</h1>
-    <p>
-      这里是文章自动入库后的知识库展示层。nemo-knows 作为独立后端服务负责 ingest、维护和关联，
-      Shingo 负责呈现处理后的知识页面。
-    </p>
-  </section>
+    <h1 class="wiki-public-title">{indexEntry ? getWikiDisplayTitle(indexEntry) : 'Wiki'}</h1>
+    {IndexContent ? <IndexContent /> : <p>这里汇总文章和资料沉淀后的知识页面。</p>}
+  </article>
 
-  <section class="wiki-overview">
-    <p class="meta">{entries.length} 个页面</p>
-    <p>
-      右侧目录按 nemo-knows 的知识结构分组。后续接入独立后端服务后，这里会继续作为 Shingo 内的知识库入口。
-    </p>
-  </section>
-
-  <WikiAside slot="aside" groups={groups} />
+  <WikiAside slot="aside" groups={groups} activeId={indexEntry?.id} />
 </BaseLayout>

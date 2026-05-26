@@ -1,17 +1,28 @@
 {
   "sources": [
     {
-      "name": "external-docs",
-      "source": "../shingo-docs",
-      "target": "src/content/posts/imported/external-docs",
-      "sourceProject": "external-docs",
+      "name": "shingo-records",
+      "source": "../shared-content/shingo-docs/record",
+      "target": "src/content/record",
+      "repository": "../shingo-docs",
+      "sourceProject": "shingo-docs",
+      "enabled": true,
+      "stabilitySample": false
+    },
+    {
+      "name": "shingo-toys",
+      "source": "../shared-content/shingo-docs/toy",
+      "target": "src/content/toy",
+      "repository": "../shingo-docs",
+      "sourceProject": "shingo-docs",
       "enabled": true,
       "stabilitySample": false
     },
     {
       "name": "nemo-knows-wiki",
-      "source": "../nemo-knows/wiki",
-      "target": "src/content/wiki/imported/nemo-knows",
+      "source": "../shared-content/nemo-knows/wiki",
+      "target": "src/content/wiki",
+      "repository": "../nemo-knows",
       "sourceProject": "nemo-knows",
       "enabled": true,
       "stabilitySample": true

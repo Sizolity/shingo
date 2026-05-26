@@ -1,6 +1,6 @@
 ---
 import { getEntryTitle } from '../lib/content';
-import type { WikiEntry } from '../lib/wiki';
+import { getWikiHref, getWikiStandaloneTitle, type WikiEntry } from '../lib/wiki';
 
 interface Props {
   groups: Map<string, WikiEntry[]>;
@@ -8,22 +8,41 @@ interface Props {
 }
 
 const { groups, activeId } = Astro.props;
+
+function getStandaloneEntry(entries: WikiEntry[]): WikiEntry | undefined {
+  if (entries.length !== 1) return undefined;
+  return getWikiStandaloneTitle(entries[0]) ? entries[0] : undefined;
+}
 ---
 
 <aside class="wiki-aside">
   <p class="sidebar-label">知识库</p>
   {
-    [...groups.entries()].map(([category, entries]) => (
-      <section class="wiki-aside-section">
-        <h2>{category}</h2>
-        <ul>
-          {entries.map((entry) => (
-            <li class={entry.id === activeId ? 'active' : undefined}>
-              <a href={`/wiki/${entry.id}/`}>{getEntryTitle(entry)}</a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    ))
+    [...groups.entries()].map(([category, entries]) => {
+      const standaloneEntry = getStandaloneEntry(entries);
+
+      return (
+        <section class="wiki-aside-section">
+          {standaloneEntry ? (
+            <ul>
+              <li class={standaloneEntry.id === activeId ? 'active' : undefined}>
+                <a href={getWikiHref(standaloneEntry)}>{category}</a>
+              </li>
+            </ul>
+          ) : (
+            <>
+              <h2>{category}</h2>
+              <ul>
+                {entries.map((entry) => (
+                  <li class={entry.id === activeId ? 'active' : undefined}>
+                    <a href={getWikiHref(entry)}>{getEntryTitle(entry)}</a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </section>
+      );
+    })
   }
 </aside>

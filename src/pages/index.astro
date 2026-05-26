@@ -3,14 +3,14 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { formatDate, getEntryDate, getEntryTitle, isPublished, sortByDateDesc } from '../lib/content';
 
-const posts = sortByDateDesc((await getCollection('posts')).filter(isPublished)).slice(0, 3);
-const projects = sortByDateDesc((await getCollection('projects')).filter(isPublished)).slice(0, 3);
+const records = sortByDateDesc((await getCollection('record')).filter(isPublished)).slice(0, 3);
+const toys = sortByDateDesc((await getCollection('toy')).filter(isPublished)).slice(0, 3);
 ---
 
-<BaseLayout title="Shingo" description="Personal website, notes, wiki, and projects.">
+<BaseLayout title="Shingo" description="Personal website, records, wiki, and toys.">
   <section class="hero">
     <p class="muted">Personal website</p>
-    <h1>记录文章、Wiki 和个人项目。</h1>
+    <h1>记录、Wiki 和玩具项目。</h1>
     <p>
       这里先保持朴素：Markdown 写内容，Astro 静态渲染，后续再接入 LLM
       做标签、摘要和内容组织。
@@ -18,16 +18,16 @@ const projects = sortByDateDesc((await getCollection('projects')).filter(isPubli
   </section>
 
   <section>
-    <h2>最近文章</h2>
+    <h2>最近记录</h2>
     <div class="entry-list">
       {
-        posts.map((post) => (
-          <a class="entry-card" href={`/posts/${post.id}/`}>
-            <p class="meta">{formatDate(getEntryDate(post))}</p>
-            <h3>{getEntryTitle(post)}</h3>
-            {post.data.summary && <p>{post.data.summary}</p>}
-            {post.data.tags.length > 0 && (
-              <p class="tags">{post.data.tags.map((tag) => <span>#{tag}</span>)}</p>
+        records.map((record) => (
+          <a class="entry-card" href={`/record/${record.id}/`}>
+            <p class="meta">{formatDate(getEntryDate(record))}</p>
+            <h3>{getEntryTitle(record)}</h3>
+            {record.data.summary && <p>{record.data.summary}</p>}
+            {record.data.tags.length > 0 && (
+              <p class="tags">{record.data.tags.map((tag) => <span>#{tag}</span>)}</p>
             )}
           </a>
         ))
@@ -36,14 +36,14 @@ const projects = sortByDateDesc((await getCollection('projects')).filter(isPubli
   </section>
 
   <section>
-    <h2>项目展示</h2>
+    <h2>玩具项目</h2>
     <div class="grid">
       {
-        projects.map((project) => (
-          <a class="card" href={`/projects/${project.id}/`}>
-            <p class="meta">{project.data.status ?? 'active'}</p>
-            <h3>{getEntryTitle(project)}</h3>
-            {project.data.summary && <p>{project.data.summary}</p>}
+        toys.map((toy) => (
+          <a class="card" href={`/toy/${toy.id}/`}>
+            <p class="meta">{toy.data.status ?? 'active'}</p>
+            <h3>{getEntryTitle(toy)}</h3>
+            {toy.data.summary && <p>{toy.data.summary}</p>}
           </a>
         ))
       }

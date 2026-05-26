@@ -27,11 +27,11 @@ interface ParsedMarkdown {
 }
 
 const defaultOptions: ImportOptions = {
-  source: '../shingo-docs',
-  target: 'src/content/posts/imported/external-docs',
-  sourceProject: 'external-docs',
+  source: '../shared-content/shingo-docs/record',
+  target: 'src/content/record',
+  sourceProject: 'shingo-docs',
   clean: false,
-  routeTarget: 'src/content/posts/imported/external-docs',
+  routeTarget: 'src/content/record',
 };
 
 const ignoredDirs = new Set(['.git', 'node_modules', 'dist', '.astro']);
@@ -221,7 +221,7 @@ function routeFromOutputPath(outputPath: string): string {
   const relativePath = path.relative(contentRoot, outputPath);
   const [collection, ...rest] = relativePath.split(path.sep);
   const contentPath = rest.join(path.sep);
-  const routePrefix = collection === 'posts' ? 'posts' : 'wiki';
+  const routePrefix = ['record', 'toy', 'wiki'].includes(collection) ? collection : 'wiki';
   const parsed = path.parse(contentPath);
   const routeSegments = parsed.name === 'index' ? parsed.dir : path.join(parsed.dir, parsed.name);
   return `/${routePrefix}/${routeSegments.split(path.sep).filter(Boolean).join('/')}/`;
@@ -296,6 +296,8 @@ async function main(): Promise<void> {
 
   if (options.clean) {
     await rm(targetRoot, { recursive: true, force: true });
+    await mkdir(targetRoot, { recursive: true });
+    await writeFile(path.join(targetRoot, '.gitkeep'), '');
   }
 
   for (const document of documents) {

@@ -19,7 +19,8 @@ pnpm preview
 pnpm check
 pnpm content:fetch:plan
 pnpm content:nemo:plan
-pnpm content:import:external
+pnpm content:import:records
+pnpm content:import:toys
 pnpm content:import:nemo
 pnpm content:import:all
 pnpm content:test
@@ -30,9 +31,9 @@ pnpm content:trigger
 
 ## Content
 
-- `src/content/posts/`: articles, notes, and logs
+- `src/content/record/`: records, notes, and logs
 - `src/content/wiki/`: wiki pages and imported knowledge notes
-- `src/content/projects/`: personal project showcases
+- `src/content/toy/`: toy projects and experiments
 
 Frontmatter is intentionally light. Pages can render with only Markdown content, while scripts or LLM workflows can fill in `title`, `summary`, `tags`, and dates later.
 
@@ -41,7 +42,7 @@ model is one content event with two independent repository workflows:
 
 ```text
 content.published
-├─ shingo: render Markdown into /posts/
+├─ shingo: render Markdown into /record/ and /toy/
 └─ nemo-knows: ingest the same source into its own wiki
 
 nemo-knows wiki published/available
@@ -49,9 +50,10 @@ nemo-knows wiki published/available
 ```
 
 The independent document repository is expected at `../shingo-docs` for local
-development. In deployment, Shingo and nemo-knows should not depend on each
-other's working tree. They should receive the same trigger event, or Shingo can
-notify nemo-knows through a webhook.
+development, but Shingo renders from `../shared-content`. Use the deploy helpers
+to publish `shingo-docs` and `nemo-knows/wiki` into that shared snapshot before
+running the Shingo content sync. This keeps Shingo from depending on another
+project's working tree directly.
 
 `pnpm content:fetch:plan` prints the git commands to run for each content source.
 The site does not run `git pull` automatically unless that behavior is explicitly
@@ -66,15 +68,18 @@ nemo-knows ingest remains explicit and reviewable.
 `NEMO_KNOWS_WEBHOOK_URL` is configured. Use `pnpm content:trigger:plan` to see
 the payload without running the workflows.
 
-`pnpm content:import:all` imports all enabled local sources that exist. The main
-external-docs source is imported into `src/content/posts/imported/external-docs`.
-The embedded Wiki source is `../nemo-knows/wiki`, imported into
-`src/content/wiki/imported/nemo-knows`.
+`pnpm content:import:all` imports all enabled local sources that exist.
+`../shared-content/shingo-docs/record` renders under `src/content/record`, so
+pages keep the `/record/...` route shape. `../shared-content/shingo-docs/toy`
+renders under `src/content/toy`, preserving the `/toy/...` route shape. The
+embedded Wiki source is `../shared-content/nemo-knows/wiki`, rendered directly
+under `src/content/wiki`, so pages keep the `/wiki/...` route shape without
+exposing source-system folders.
 
 `pnpm content:sync` is Shingo's local render flow after external Markdown or a
 nemo-knows Wiki artifact becomes available: import, stability test, check, and
-build. The stability test regenerates `../nemo-knows/wiki` into `.tmp/` and
-compares it with `src/content/wiki/imported/nemo-knows`.
+build. The stability test regenerates the shared wiki snapshot into `.tmp/` and
+compares it with `src/content/wiki`.
 
 Later this can become the LLM-driven maintenance flow for classification,
 tagging, summaries, and wiki organization.

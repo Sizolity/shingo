@@ -1,9 +1,18 @@
 import { execFile } from 'node:child_process';
-import { access } from 'node:fs/promises';
+import { access, rm } from 'node:fs/promises';
 import { promisify } from 'node:util';
 import { readContentSources } from './content-sources';
 
 const execFileAsync = promisify(execFile);
+const cleanupTargets = [
+  '.astro',
+  'dist',
+  'node_modules/.astro',
+  'src/content/posts/imported/external-docs',
+  'src/content/posts/record',
+  'src/content/projects/toy',
+  'src/content/wiki/imported/nemo-knows',
+];
 
 async function exists(path: string): Promise<boolean> {
   try {
@@ -17,6 +26,10 @@ async function exists(path: string): Promise<boolean> {
 async function main(): Promise<void> {
   const sources = await readContentSources();
   let imported = 0;
+
+  for (const target of cleanupTargets) {
+    await rm(target, { recursive: true, force: true });
+  }
 
   for (const source of sources) {
     if (!(await exists(source.source))) {

@@ -2,11 +2,11 @@
 import { getCollection, render } from 'astro:content';
 import WikiAside from '../../components/WikiAside.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getEntryTitle, isPublished } from '../../lib/content';
-import { groupWikiEntries, sortWikiEntries } from '../../lib/wiki';
+import { isPublished } from '../../lib/content';
+import { getWikiDisplayTitle, getWikiStandaloneTitle, groupWikiEntries, sortWikiEntries } from '../../lib/wiki';
 
 export async function getStaticPaths() {
-  const wiki = (await getCollection('wiki')).filter(isPublished);
+  const wiki = (await getCollection('wiki')).filter((entry) => isPublished(entry) && entry.data.kind !== 'index');
 
   return wiki.map((entry) => ({
     params: { slug: entry.id },
@@ -18,13 +18,13 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 const entries = sortWikiEntries((await getCollection('wiki')).filter(isPublished));
 const groups = groupWikiEntries(entries);
+const standaloneTitle = getWikiStandaloneTitle(entry);
+const displayTitle = getWikiDisplayTitle(entry);
 ---
 
-<BaseLayout title={getEntryTitle(entry)} description={entry.data.summary}>
-  <article class="article">
-    <p class="meta">
-      {[entry.data.sourceProject, entry.data.kind, entry.data.sourcePath].filter(Boolean).join(' / ')}
-    </p>
+<BaseLayout title={displayTitle} description={entry.data.summary}>
+  <article class:list={['article', standaloneTitle && 'article--standalone-wiki']}>
+    {standaloneTitle && <h1 class="wiki-public-title">{standaloneTitle}</h1>}
     <Content />
   </article>
   <WikiAside slot="aside" groups={groups} activeId={entry.id} />

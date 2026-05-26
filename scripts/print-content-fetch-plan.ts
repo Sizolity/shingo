@@ -7,9 +7,11 @@ async function main(): Promise<void> {
   console.log('Run these commands yourself before content sync when the source is a git repository.');
 
   for (const source of sources) {
+    const fetchPath = source.repository ?? source.source;
+
     console.log('');
     console.log(`# ${source.name}`);
-    console.log(`cd ${source.source}`);
+    console.log(`cd ${fetchPath}`);
     console.log('git status');
     console.log('git pull --ff-only');
   }

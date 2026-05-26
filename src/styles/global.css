@@ -260,6 +260,10 @@ h3 {
   max-width: 760px;
 }
 
+.article--standalone-wiki .wiki-public-title + h1 {
+  display: none;
+}
+
 .article :where(img, video) {
   max-width: 100%;
 }

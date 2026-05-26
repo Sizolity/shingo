@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getEntryTitle, isPublished, sortByDateDesc } from '../../lib/content';
+
+const toys = sortByDateDesc((await getCollection('toy')).filter(isPublished));
+---
+
+<BaseLayout title="玩具" description="Toy project showcase.">
+  <section class="hero">
+    <h1>玩具</h1>
+    <p>小项目和实验内容会放在这里。</p>
+  </section>
+
+  <div class="grid">
+    {
+      toys.map((toy) => (
+        <a class="card" href={`/toy/${toy.id}/`}>
+          <p class="meta">{toy.data.status ?? 'active'}</p>
+          <h2>{getEntryTitle(toy)}</h2>
+          {toy.data.summary && <p>{toy.data.summary}</p>}
+          {toy.data.tags.length > 0 && (
+            <p class="tags">{toy.data.tags.map((tag) => <span>#{tag}</span>)}</p>
+          )}
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

@@ -7,7 +7,7 @@ async function main(): Promise<void> {
   console.log('Shared content trigger plan:');
   console.log('');
   console.log('1. A content.published event is emitted by the external document repository.');
-  console.log('2. Shingo handles the event by rendering Markdown into /posts/.');
+  console.log('2. Shingo handles the event by rendering Markdown into /record/ and /toy/.');
   console.log('3. nemo-knows handles the same event by running its own ingest/wiki maintenance.');
   console.log('4. Shingo /wiki/ embeds the nemo-knows wiki artifact after it is updated.');
 

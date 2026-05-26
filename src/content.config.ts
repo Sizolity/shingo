@@ -15,8 +15,8 @@ const baseContentSchema = z.object({
   draft: z.boolean().default(false),
 });
 
-const posts = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/posts' }),
+const record = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/record' }),
   schema: baseContentSchema,
 });
 
@@ -27,8 +27,8 @@ const wiki = defineCollection({
   }),
 });
 
-const projects = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
+const toy = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/toy' }),
   schema: baseContentSchema.extend({
     url: z.url().optional(),
     repo: z.url().optional(),
@@ -36,4 +36,4 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { posts, wiki, projects };
+export const collections = { record, wiki, toy };

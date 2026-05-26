@@ -1,0 +1,30 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDate, getEntryDate, getEntryTitle, isPublished } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const records = (await getCollection('record')).filter(isPublished);
+
+  return records.map((record) => ({
+    params: { slug: record.id },
+    props: { record },
+  }));
+}
+
+const { record } = Astro.props;
+const { Content } = await render(record);
+const recordDate = getEntryDate(record);
+---
+
+<BaseLayout title={getEntryTitle(record)} description={record.data.summary}>
+  <article class="article">
+    {recordDate && <p class="meta">{formatDate(recordDate)}</p>}
+    {
+      record.data.tags.length > 0 && (
+        <p class="tags">{record.data.tags.map((tag) => <span>#{tag}</span>)}</p>
+      )
+    }
+    <Content />
+  </article>
+</BaseLayout>

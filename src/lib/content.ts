@@ -1,6 +1,6 @@
 import type { CollectionEntry } from 'astro:content';
 
-type DatedEntry = CollectionEntry<'posts'> | CollectionEntry<'wiki'> | CollectionEntry<'projects'>;
+type DatedEntry = CollectionEntry<'record'> | CollectionEntry<'wiki'> | CollectionEntry<'toy'>;
 
 export function getEntryTitle(entry: DatedEntry): string {
   return entry.data.title ?? entry.id.replace(/-/g, ' ');

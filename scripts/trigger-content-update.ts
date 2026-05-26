@@ -24,7 +24,7 @@ function hasFlag(name: string): boolean {
 function buildPayload(): ContentEventPayload {
   return {
     event: 'content.published',
-    source: readArg('--source') ?? 'external-docs',
+    source: readArg('--source') ?? 'shingo-docs',
     repository: readArg('--repository') ?? process.env.CONTENT_REPOSITORY,
     ref: readArg('--ref') ?? process.env.CONTENT_REF,
     timestamp: new Date().toISOString(),

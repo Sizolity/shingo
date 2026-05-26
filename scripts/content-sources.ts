@@ -5,6 +5,7 @@ export interface ContentSource {
   name: string;
   source: string;
   target: string;
+  repository?: string;
   sourceProject: string;
   enabled?: boolean;
   stabilitySample?: boolean;
