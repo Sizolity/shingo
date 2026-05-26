@@ -16,7 +16,7 @@ const posts = sortByDateDesc((await getCollection('posts')).filter(isPublished))
     {
       posts.map((post) => (
         <a class="entry-card" href={`/posts/${post.id}/`}>
-          <p class="meta">{formatDate(getEntryDate(post))}</p>
+          {getEntryDate(post) && <p class="meta">{formatDate(getEntryDate(post))}</p>}
           <h2>{getEntryTitle(post)}</h2>
           {post.data.summary && <p>{post.data.summary}</p>}
           {post.data.tags.length > 0 && (

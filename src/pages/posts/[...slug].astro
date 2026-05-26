@@ -14,11 +14,12 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+const postDate = getEntryDate(post);
 ---
 
 <BaseLayout title={getEntryTitle(post)} description={post.data.summary}>
   <article class="article">
-    <p class="meta">{formatDate(getEntryDate(post))}</p>
+    {postDate && <p class="meta">{formatDate(postDate)}</p>}
     {
       post.data.tags.length > 0 && (
         <p class="tags">{post.data.tags.map((tag) => <span>#{tag}</span>)}</p>

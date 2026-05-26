@@ -13,6 +13,7 @@ interface ImportOptions {
 interface SourceDocument {
   absolutePath: string;
   relativePath: string;
+  updated: Date;
 }
 
 interface PreparedDocument extends SourceDocument {
@@ -81,9 +82,11 @@ async function listMarkdownFiles(root: string, current = root): Promise<SourceDo
     if (!entry.isFile() || !entry.name.match(/\.mdx?$/i)) continue;
 
     const absolutePath = path.join(current, entry.name);
+    const fileInfo = await stat(absolutePath);
     documents.push({
       absolutePath,
       relativePath: path.relative(root, absolutePath),
+      updated: fileInfo.mtime,
     });
   }
 
@@ -123,16 +126,19 @@ function titleFromPath(relativePath: string): string {
 }
 
 function firstHeading(body: string): string | undefined {
-  return body.match(/^#\s+(.+)$/m)?.[1]?.trim();
+  return body.match(/^#{1,6}\s+(.+)$/m)?.[1]?.trim();
 }
 
 function ensureTopHeading(body: string, title: string): string {
-  if (firstHeading(body)) return body.trim();
+  const trimmed = body.trim();
+  if (trimmed.match(/^#{1,6}\s+.+$/m)) {
+    return trimmed.replace(/^#{1,6}\s+.+$/m, `# ${title}`);
+  }
   return `# ${title}\n\n${body.trim()}`;
 }
 
 function firstParagraph(body: string): string | undefined {
-  const withoutTitle = body.replace(/^#\s+.+$/m, '').trim();
+  const withoutTitle = body.replace(/^#{1,6}\s+.+$/gm, '').trim();
   const paragraph = withoutTitle
     .split(/\n\s*\n/)
     .map((block) => block.trim())
@@ -145,9 +151,8 @@ function yamlString(value: string): string {
   return JSON.stringify(value);
 }
 
-function tagsFor(relativePath: string, sourceProject: string): string[] {
-  const firstSegment = relativePath.split(path.sep)[0];
-  return Array.from(new Set([sourceProject, firstSegment].filter(Boolean)));
+function yamlDate(value: Date): string {
+  return value.toISOString().slice(0, 10);
 }
 
 function buildFrontmatter(
@@ -169,8 +174,12 @@ function buildFrontmatter(
       lines.push(`summary: ${yamlString(summary)}`);
     }
 
-    if (!hasFrontmatterKey(parsed.frontmatter, 'tags')) {
+    if (tags.length > 0 && !hasFrontmatterKey(parsed.frontmatter, 'tags')) {
       lines.push(`tags: [${tags.map(yamlString).join(', ')}]`);
+    }
+
+    if (!hasFrontmatterKey(parsed.frontmatter, 'date') && !hasFrontmatterKey(parsed.frontmatter, 'updated')) {
+      lines.push(`updated: ${yamlDate(source.updated)}`);
     }
 
     if (!hasFrontmatterKey(parsed.frontmatter, 'sourceProject')) {
@@ -189,7 +198,8 @@ function buildFrontmatter(
     '---',
     `title: ${yamlString(title)}`,
     summary ? `summary: ${yamlString(summary)}` : undefined,
-    `tags: [${tags.map(yamlString).join(', ')}]`,
+    tags.length > 0 ? `tags: [${tags.map(yamlString).join(', ')}]` : undefined,
+    `updated: ${yamlDate(source.updated)}`,
     `sourceProject: ${yamlString(options.sourceProject)}`,
     `sourcePath: ${yamlString(source.relativePath)}`,
     '---',
@@ -252,7 +262,7 @@ function buildDocument(
     firstHeading(parsed.body) ??
     titleFromPath(source.relativePath);
   const summary = readFrontmatterValue(parsed.frontmatter, 'summary') ?? firstParagraph(parsed.body);
-  const tags = tagsFor(source.relativePath, options.sourceProject);
+  const tags: string[] = [];
 
   const frontmatter = buildFrontmatter(parsed, title, summary, tags, source, options);
 
